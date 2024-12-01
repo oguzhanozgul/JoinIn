@@ -1,0 +1,1 @@
+export const BORDER_RADIUS_CONSTANT = 160 / 12;

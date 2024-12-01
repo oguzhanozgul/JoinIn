@@ -1,0 +1,51 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid;
+  border-color: var(--ji-color-textInput-border);
+  border-radius: 12px;
+  background-color: var(--ji-color-elevation-2);
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  color: var(--ji-color-text-default);
+  border: none;
+  padding: 0;
+}
+
+.input.input {
+  color: var(--ji-color-text-default);
+  border: none;
+  padding: 0;
+  background-color: transparent;
+
+  &::placeholder {
+    color: var(--ji-color-text-disabled);
+  }
+}
+
+.section {
+  position: relative;
+  padding: 0;
+  margin: 0;
+  color: var(--ji-color-text-subdued);
+}
+
+.label {
+  color: var(--ji-color-text-subdued);
+}
+
+/* Although the following classes are not used in the TextInput component, they are included here for completeness. I usually find myself wondering what a certain class is and including empty classes help on issue resolution. */
+.required {
+}
+
+.description {
+}
+
+.error {
+}

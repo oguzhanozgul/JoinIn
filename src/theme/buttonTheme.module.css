@@ -1,0 +1,13 @@
+.defaultRoot.defaultRoot {
+  background-color: var(--ji-color-button-default-fill-default);
+  color: var(--ji-color-button-default-text-default);
+  border: none;
+  svg {
+    stroke-width: 1px;
+  }
+
+  &:hover {
+    background-color: var(--ji-color-button-default-fill-hover);
+    color: var(--ji-color-button-default-text-hover);
+  }
+}

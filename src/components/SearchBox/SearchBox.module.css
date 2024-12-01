@@ -1,0 +1,13 @@
+.sectionEmpty {
+  svg {
+    color: var(--ji-color-text-subdued);
+    stroke-width: 1px;
+  }
+}
+
+.sectionFilled {
+  svg {
+    color: var(--ji-color-text-default);
+    stroke-width: 1.5x;
+  }
+}

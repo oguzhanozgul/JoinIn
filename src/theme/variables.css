@@ -1,0 +1,26 @@
+:root {
+  --ji-color-elevation-0: #0A0B0C;
+  --ji-color-elevation-1: #131416;
+  --ji-color-elevation-2: #1a1c1e;
+  --ji-color-elevation-3: #212327;
+  --ji-color-elevation-4: #282b2f;
+  --ji-color-elevation-5: #2f3237;
+  --ji-color-elevation-6: #363a3f;
+
+  --ji-color-text-default: #ffffff;
+  --ji-color-text-hover: #e6e6e6;
+  --ji-color-text-disabled: #666666;
+  --ji-color-text-subdued: #b3b3b3;
+
+
+  --ji-color-button-default-fill-default: #2e3238;
+  --ji-color-button-default-fill-hover: #454b54;
+  --ji-color-button-default-fill-active: #737d8c;
+  --ji-color-button-default-fill-disabled: #23262a;
+  --ji-color-button-default-text-default: #b3b3b3;
+  --ji-color-button-default-text-hover: #e6e6e6;
+  --ji-color-button-default-text-active: #ffffff;
+  --ji-color-button-default-text-disabled: #666666;
+
+  --ji-color-textInput-border: #262626;
+}

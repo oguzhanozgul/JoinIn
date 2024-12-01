@@ -1,0 +1,158 @@
+{
+  "env": {
+    "browser": true,
+    "es2021": true,
+    "jest": true
+  },
+  "settings": {
+    "import/resolver": {
+      "typescript": {}
+    }
+  },
+  "extends": [
+    "eslint:recommended",
+    "plugin:import/typescript",
+    "plugin:react/recommended",
+    "plugin:react-hooks/recommended",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:prettier/recommended"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "ecmaVersion": "latest",
+    "sourceType": "module"
+  },
+  "plugins": [
+    "react",
+    "@typescript-eslint",
+    "prettier",
+    "jest",
+    "simple-import-sort",
+    "import",
+    "@tanstack/query"
+  ],
+  "rules": {
+    "prettier/prettier": [
+      "error",
+      {
+        "endOfLine": "auto",
+        "singleQuote": false,
+        "usePrettierrc": true
+      }
+    ],
+    "react/react-in-jsx-scope": "off",
+    "react/jsx-filename-extension": [
+      "warn",
+      {
+        "extensions": [
+          ".tsx"
+        ]
+      }
+    ],
+    "@typescript-eslint/explicit-function-return-type": "off",
+    "max-len": [
+      "error",
+      {
+        "code": 120,
+        "ignoreComments": true,
+        "ignoreTrailingComments": true,
+        "ignoreUrls": true,
+        "ignoreStrings": true,
+        "ignoreTemplateLiterals": true,
+        "ignoreRegExpLiterals": true
+      }
+    ],
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "error",
+    "import/prefer-default-export": "off",
+    "quotes": [
+      "error",
+      "double",
+      {
+        "allowTemplateLiterals": true,
+        "avoidEscape": true
+      }
+    ],
+    "semi": [
+      "error",
+      "always"
+    ],
+    "no-unused-vars": "off",
+    "react/prop-types": "off",
+    "@typescript-eslint/no-unused-vars": [
+      "warn",
+      {
+        "argsIgnorePattern": "^_"
+      }
+    ],
+    "no-shadow": "off",
+    "@typescript-eslint/no-shadow": "error",
+    "react/function-component-definition": "off",
+    "react/jsx-props-no-spreading": "off",
+    "react/require-default-props": "off",
+    "no-nested-ternary": "off",
+    "@typescript-eslint/no-empty-interface": "off",
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/explicit-module-boundary-types": "off",
+    "simple-import-sort/imports": "error",
+    "simple-import-sort/exports": "error",
+    "react/no-unescaped-entities": "off",
+    "@tanstack/query/exhaustive-deps": "error"
+  },
+  "reportUnusedDisableDirectives": true,
+  "globals": {
+    "React": "writable"
+  },
+  "overrides": [
+    // override "simple-import-sort" config
+    {
+      "files": [
+        "*.js",
+        "*.jsx",
+        "*.ts",
+        "*.tsx"
+      ],
+      "rules": {
+        "simple-import-sort/imports": [
+          "error",
+          {
+            "groups": [
+              // Packages `react` related packages come first.
+              [
+                "^react",
+                "^@?\\w"
+              ],
+              // Internal packages.
+              [
+                "^(@|components)(/.*|$)"
+              ],
+              // Side effect imports.
+              [
+                "^\\u0000"
+              ],
+              // Parent imports. Put `..` last.
+              [
+                "^\\.\\.(?!/?$)",
+                "^\\.\\./?$"
+              ],
+              // Other relative imports. Put same-folder imports and `.` last.
+              [
+                "^\\./(?=.*/)(?!/?$)",
+                "^\\.(?!/?$)",
+                "^\\./?$"
+              ],
+              // Style imports.
+              [
+                "^.+\\.?(css)$"
+              ]
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

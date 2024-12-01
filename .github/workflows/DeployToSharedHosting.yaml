@@ -1,0 +1,42 @@
+name: Deploy to production
+
+on:
+  push:
+    branches:
+      - production
+
+  workflow_dispatch:
+
+jobs:
+  web-deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [16.x]
+
+    steps:
+      - name: Get latest code
+        uses: actions/checkout@v2.1.0
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@master
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Copy .env.production to .env
+        run: cp .env.production .env
+
+      - name: Build Project
+        run: |
+          npm install
+          npm run build
+
+      - name: Upload to FTP server
+        uses: SamKirkland/FTP-Deploy-Action@4.3.3
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: dist/
