@@ -40,6 +40,7 @@ const PlayerWithNav = ({ disabled, streamUrl, showPrev, showNext, onPrevious, on
         />
       )}
       <MiniPlayer disabled={disabled} streamUrl={streamUrl} />
+      {/* Alternative approach to reusing the MiniPlayer above is to directly use the usePlayer hook. This will be lower level than above however will give additional customizations if needed */}
       {showNext && <ControlButton buttonType={ButtonType.Next} onClick={handleNext} disabled={disabled} size="sm" />}
     </Group>
   );
