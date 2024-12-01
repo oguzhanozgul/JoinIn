@@ -7,7 +7,7 @@ import StationCard from "../StationCard/StationCard.tsx";
 
 import PlayerWithNav from "./PlayerWithNav.tsx";
 
-import classes from "./StickyPlayer.module.css";
+import classes from "./StickyPlayerContainer.module.css";
 
 export interface StickyPlayerContainerProps {
   invisible?: boolean;
