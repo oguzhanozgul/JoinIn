@@ -52,7 +52,7 @@ class AudioPlayer {
         await this.audio.play();
       },
       3,
-      2000,
+      1000,
     );
   }
 
@@ -65,7 +65,7 @@ class AudioPlayer {
           this.currentStream = streamUrl;
         },
         3,
-        2000,
+        1000,
       );
     }
   }
