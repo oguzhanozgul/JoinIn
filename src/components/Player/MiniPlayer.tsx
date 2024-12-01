@@ -1,3 +1,5 @@
+import { IconMusicExclamation } from "@tabler/icons-react";
+
 import usePlayer from "../../hooks/usePlayer";
 import { ButtonType } from "../../types/ButtonType";
 import ControlButton from "../ControlButton/ControlButton";
@@ -8,7 +10,11 @@ interface MiniPlayerProps {
 }
 
 const MiniPlayer = ({ disabled, streamUrl }: MiniPlayerProps) => {
-  const { isPlaying, togglePlayPause } = usePlayer(streamUrl);
+  const { isPlaying, togglePlayPause, error: playerError } = usePlayer(streamUrl);
+
+  if (playerError) {
+    return <IconMusicExclamation color="red" size={32} />;
+  }
 
   return (
     <ControlButton

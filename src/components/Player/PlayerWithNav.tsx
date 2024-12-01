@@ -1,13 +1,11 @@
 import { useCallback } from "react";
 import { Group } from "@mantine/core";
 
-import usePlayer from "../../hooks/usePlayer";
 import useUserSettingsStore from "../../stores/useUserSettingsStore";
 import { ButtonType } from "../../types/ButtonType";
 import ControlButton from "../ControlButton/ControlButton";
 
-// See comment on alternative approach below
-// import MiniPlayer from "./MiniPlayer";
+import MiniPlayer from "./MiniPlayer";
 
 interface PlayerWithNavProps {
   disabled?: boolean;
@@ -19,8 +17,6 @@ interface PlayerWithNavProps {
 }
 
 const PlayerWithNav = ({ disabled, streamUrl, showPrev, showNext, onPrevious, onNext }: PlayerWithNavProps) => {
-  const { isPlaying, togglePlayPause } = usePlayer(streamUrl);
-
   const previouslyPlayed = useUserSettingsStore(state => state.previouslyPlayed);
   const playPrevious = useUserSettingsStore(state => state.playPrevious);
 
@@ -43,13 +39,7 @@ const PlayerWithNav = ({ disabled, streamUrl, showPrev, showNext, onPrevious, on
           size="sm"
         />
       )}
-      <ControlButton
-        buttonType={isPlaying ? ButtonType.Pause : ButtonType.Play}
-        onClick={togglePlayPause}
-        disabled={disabled}
-      />
-      {/* Alternative approach is to use the MiniPlayer component, if we want to reuse the customizations made in that component (if any) */}
-      {/* <MiniPlayer disabled={disabled} streamUrl={streamUrl} /> */}
+      <MiniPlayer disabled={disabled} streamUrl={streamUrl} />
       {showNext && <ControlButton buttonType={ButtonType.Next} onClick={handleNext} disabled={disabled} size="sm" />}
     </Group>
   );

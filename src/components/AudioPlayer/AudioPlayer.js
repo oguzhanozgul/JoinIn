@@ -91,7 +91,6 @@ class AudioPlayer {
         return; // Return if successful
       } catch (error) {
         attempt++;
-        console.warn(`Attempt ${attempt}/${maxAttempts} failed: ${error.message}. Retrying...`);
         if (attempt >= maxAttempts) {
           const errorMessage = `Failed after ${maxAttempts} attempts: ${error.message}`;
           this.errorCallback?.(new Error(errorMessage));

@@ -6,15 +6,17 @@ import useUserSettingsStore from "../stores/useUserSettingsStore";
 
 const usePlayer = (streamUrl?: string) => {
   const [isPlaying, setIsPlaying] = useState(audioPlayerInstance.isPlaying);
+  const [error, setError] = useState<Error | null>(null);
+
   const setPaused = useUserSettingsStore(state => state.setPaused);
 
   // Handle errors
   useEffect(() => {
-    const logError = (error: Error) => {
-      console.error(error.message);
+    const handleError = (errorToLog: Error) => {
+      setError(errorToLog);
     };
 
-    audioPlayerInstance.onError(logError);
+    audioPlayerInstance.onError(handleError);
 
     return () => {
       audioPlayerInstance.onError(null);
@@ -23,15 +25,19 @@ const usePlayer = (streamUrl?: string) => {
 
   // Subscribe to playing state changes and sync with the global state
   useEffect(() => {
-    const handlePlayingChange = (instanceState: AudioPlayerState) => {
+    const handleIsPlayingChange = (instanceState: AudioPlayerState) => {
       setIsPlaying(instanceState.isPlaying);
       setPaused(!instanceState.isPlaying);
+
+      if (instanceState.isPlaying) {
+        setError(null);
+      }
     };
 
-    audioPlayerInstance.addListener(handlePlayingChange);
+    audioPlayerInstance.addListener(handleIsPlayingChange);
 
     return () => {
-      audioPlayerInstance.removeListener(handlePlayingChange);
+      audioPlayerInstance.removeListener(handleIsPlayingChange);
     };
   }, [setPaused]);
 
@@ -42,6 +48,7 @@ const usePlayer = (streamUrl?: string) => {
     const initializeStream = async () => {
       await audioPlayerInstance.setSource(streamUrl);
       await audioPlayerInstance.play(streamUrl);
+      setError(null);
     };
 
     initializeStream();
@@ -54,7 +61,7 @@ const usePlayer = (streamUrl?: string) => {
     audioPlayerInstance.togglePlay(streamUrl);
   }, [streamUrl]);
 
-  return { isPlaying, togglePlayPause };
+  return { isPlaying, togglePlayPause, error };
 };
 
 export default usePlayer;
