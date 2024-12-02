@@ -6,6 +6,7 @@ import useUserSettingsStore from "../stores/useUserSettingsStore";
 
 const usePlayer = (streamUrl?: string) => {
   const [isPlaying, setIsPlaying] = useState(audioPlayerInstance.isPlaying);
+  const [currentStreamUrl, setCurrentStreamUrl] = useState<string | null>(null);
   const [error, setError] = useState<Error | null>(null);
 
   const setPaused = useUserSettingsStore(state => state.setPaused);
@@ -28,6 +29,7 @@ const usePlayer = (streamUrl?: string) => {
     const handleIsPlayingChange = (instanceState: AudioPlayerState) => {
       setIsPlaying(instanceState.isPlaying);
       setPaused(!instanceState.isPlaying);
+      setCurrentStreamUrl(instanceState.currentStream);
 
       if (instanceState.isPlaying) {
         setError(null);
@@ -61,7 +63,7 @@ const usePlayer = (streamUrl?: string) => {
     audioPlayerInstance.togglePlay(streamUrl);
   }, [streamUrl]);
 
-  return { isPlaying, togglePlayPause, error };
+  return { isPlaying, currentStreamUrl, togglePlayPause, error };
 };
 
 export default usePlayer;

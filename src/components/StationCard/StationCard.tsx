@@ -12,7 +12,6 @@ import classes from "./StationCard.module.css";
 
 interface StationCardProps {
   isPlayable?: boolean;
-  isPaused?: boolean;
   station: Station;
   size: "playable" | "details";
   onClick?: (station: Station) => void;

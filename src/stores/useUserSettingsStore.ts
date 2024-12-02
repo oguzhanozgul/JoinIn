@@ -55,7 +55,7 @@ const useUserSettingsStore = create<UserSettings & UserSettingsActions>()(
       setCurrentlyPlaying: station => {
         const { currentlyPlaying } = get();
         // Move the currently playing station to the previously played list (or update it if it's already there by moving to the end)
-        if (currentlyPlaying) {
+        if (currentlyPlaying && currentlyPlaying.id !== station?.id) {
           set(state => ({
             previouslyPlayed: [...state.previouslyPlayed.filter(st => st.id !== currentlyPlaying.id), currentlyPlaying],
           }));
