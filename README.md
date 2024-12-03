@@ -234,16 +234,16 @@ git clone https://github.com/oguzhanozgul/JoinIn.git
 cd <repository-folder>
 ```
 
-1. Install dependencies
+2. Install dependencies
 
 ```bash
 npm install
 ```
 
-1. Start the application
+3. Start the application
 
 ```bash
 npm run dev
 ```
 
-1. Access the app at <http://localhost:3000>.
+4. Access the app at <http://localhost:3000>.
