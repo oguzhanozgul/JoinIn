@@ -115,7 +115,7 @@ A custom audio player component for playback management using the standard `HTML
 - A container for the `PlayerWithNav` component that sticks to the bottom of the window when the player is visible.
 - Also displays the station logo, name and description on the left side of the player.
 
-### Hooks
+### Custom Hooks
 
 #### usePlayer
 
@@ -155,10 +155,6 @@ Client configurations for axios and React Query can be found in the `src/client`
 - The environment variables are stored in the `.env` file at the root of the project.
 - There is only one environment variable, `VITE_API_URL`, which is the base URL for the API.
 - There is only one .env file for now. Normally we separate development and production environment variables into separate .env files.
-
-### Assets
-
-- There is only one custom asset, the null_icon.svg, which is used a placeholder. It's there to because it was quick to implement, but I agree this is not proper.
 
 ### State Management
 
