@@ -6,145 +6,135 @@ This single-page application is an online radio player built using React. It uti
 
 ### Hosted version
 
-The application is already being hosted at <https://joininradio.netlify.app/>.
+The application is live and accessible at [JoinIn Radio](https://joininradio.netlify.app/).
 
 ## User Interface
 
 ### Homepage
 
-- Displays a list of available radio stations fetched from the provided API.
-- Displays a search box for filtering stations by name.
-- Displays a sorting dropdown for sorting stations by name, popularity and reliability in ascending or descending order.
-- The logos and the names of the stations are shown in a grid layout.
-- Upon hovering over a station logo, a play button appears. Upon clicking a station logo, the station starts streaming in the sticky player.
+- Displays a grid of available radio stations fetched via the Mini TuneIn API.
+- Includes:
+  - A search bar for filtering stations by name.
+  - A sorting dropdown to order stations by name, popularity, or reliability in ascending/descending order.
+- Each station card showcases the station's logo and name.
+- Hovering over a station logo reveals a play button. Clicking the logo starts streaming the station via the sticky player.
 
 ### Sticky player
 
-- Clicking on a station logo brings the the sticky player from the bottom of the window, if it is not already visible.
-- In the sticky player, the station logo, name, and description are shown on the left, and playback controls are displayed on the right.
-- There are currently two playback controls:
-  - Play/Pause button: Toggles between playing and pausing the station stream.
-  - Previous station button: Starts streaming the previous stations in the previously played stations list.
+- Automatically appears at the bottom of the window when a station is selected for playback.
+- Displays station details (logo, name, description) on the left and playback controls on the right.
+- Playback controls include:
+  - Play/Pause Button: Toggles playback of the selected stream.
+  - Previous Station Button: Streams the last-played station from the session history.
 
 ## Architecture
 
-- The application is written in TypeScript using React. It's build using vite.
+### Key Technologies
 
-- It uses Mantine UI for basic and layout components. It uses css modules for styling, in addition to the Mantine style API.
+- **Frontend Framework:** React with TypeScript, built using Vite for fast development.
 
-- The global state is managed using Zustand and async state is managed using React Query.
+- **Styling:** Mantine UI for layout and components, combined with CSS Modules for customization.
 
-- Remote data is fetched using axios.
+- **State Management:**
+  - Zustand for global state.
+  - React Query for asynchronous data handling and caching.
 
-- Front end routing, although not very useful at this point, is implemented using React Router.
+- **Networking:** Axios for API requests.
+
+- **Routing:** React Router, included for potential future expansion.
 
 ### Components
 
-Extendability, reusability and maintainability are the main focus of the components. The components are designed to be as modular as possible, with each component having a single responsibility.
+Components are designed with a focus on modularity, reusability, and single responsibility, ensuring maintainability and scalability.
 
-**AudioPlayer**
+#### AudioPlayer
 
-A custom audio player component that manages stream loading, playing and pausing. This component uses the standard `HTMLAudioElement` API for playback.
+A custom audio player component for playback management using the standard `HTMLAudioElement` API for playback.
 
-The component features the following:
+- **Core Features:**
 
-- Play/Pause functionality, including a toggle function.
-  - Uses the standard methods + toggle function.
-- Load stream from a URL.
-  - Uses the standard methods.
-- Single instance of the player.
-  - The player is implemented as a singleton, meaning only one instance of the player is present during the session/application lifetime. Since it's the same/single instance, we are able to use it in different UI players without breaking the playback.
-- Subscription system for outside components to listen to player state changes.
-  - Outside components can subscribe to player state changes. This allows components to act as observers to the player state, which is currently the play state and stream url.
-  - Components can unsubscribe from the player state changes when they are unmounted.
-  - When a publish is done, the subscribed components are notified of the state one by one, in the order they subscribed.
-  - The same component can subscribe multiple times using different callback functions, but the same callback function can only subscribe once.
-- Automatic retry before fail functionality.
-  - The player will automatically retry loading the stream if it fails to load, and retry playing the streams if it fails to play.
-  - The player will retry 3 times with an interval of 2 seconds before failing. These values can be changed per function.
-- Error handling and onError callbacks.
-  - The player will throw an error if it fails to load the stream or play the stream after 3 retries.
-  - On the above errors and on any other errors, the player will call the onError callback function if it is provided. See **Example Technical Debt** section on an improvement to this.
-- The `AudioPlayer` is written in plain JavaScript, without any TypeScript. This is because we want it to be able to be used in different projects regardless of front end library and super-sets used such as TypeScript. Nevertheless, to improve the code quality and maintainability, a type definition file is also supplied.
+  - Play/Pause functionality and a toggle method.
+  - Stream loading via URL
+  - Singleton architecture ensures a single player instance throughout the session.
+  - Observer pattern for state updates, enabling external components to subscribe/unsubscribe to state changes.
+  - Error handling with retry logic (configurable number of attempts, configurable intervals) and customizable error callback.
 
-**SearchBox**
+- **Technical Note:** Written in plain JavaScript for cross-framework compatibility, supplemented with TypeScript type definitions for maintainability.
+- See **Example Technical Debt** section regarding this component.
 
-- Pretty basic text input customized by Mantine style API.
-- No debouncing is implemented in this component to make it more generic (it's debounced in the parent component).
+#### SearchBox
 
-**SortButton**
+- Basic text input customized by Mantine style API.
+- No debouncing is implemented to make it more generic (it's debounced in the parent component).
 
-- Simple dropdown button to sort the stations by name, popularity or reliability in ascending or descending order.
+#### SortButton
 
-**StationLogo**
+- Dropdown button to sort the stations by name, popularity or reliability in ascending or descending order.
 
-- A simple component that displays the logo of a station in various given sizes. Shows a fallback image if the logo is not available.
+#### StationLogo
 
-**StationCard**
+- Component that displays the logo of a station in various sizes with a fallback image.
 
-- A card component that displays the logo, name and description of a station.
-- Can display two sizes:
-  - `playable` size, with a big logo and the station name, which displays a play button on hover
-  - `details` size, with a small logo and the station name and description, without any hover effects.
+#### StationCard
 
-**StationCardList**
+- Displays station logo, name, and description.
+- Supports two layouts:
+  - **Playable**: Larger logo with hover effects and a play button.
+  - **Detailed**: Compact view with a focus on text content.
 
-- A component to fetch the list of stations and display a grid of `StationCard` components. Since there is only one component that needs the station list, we can fetch the list in this component and pass it down to the `StationCard` components. Furthermore, using the builtin caching strategies of React Query helps us to use only one instance of the list in the whole application.
-- It displays a loading spinner while fetching, and an error message if the fetch fails. Retry strategy is implemented in the query hook explained below.
-- It also handles searching and sorting of the stations.
-  - The search is debounced to avoid unnecessary API calls.
-  - Search filtering is done over the fetched list of stations at the frontend rather than backend (because we don't have one implemented as such).
-  - The sorting is also done over the fetched list of stations, at the frontend rather than backend (because we don't have one implemented as such).
-  - Once we have the fully implemented backend, we should move the searching, sorting and possible pagination to the backend.
-  - Considering that we are trying to sort by fields which can contain null values, a basic strategy is implemented to handle the null values. This can be improved by adding a more complex strategy to handle the null values. (example of null values: `popularity` for station id `s21606`)
+#### StationCardList
 
-**StationSelector**
+- Fetches the list of stations and displays a grid of `StationCard` components.
+- Displays a loading spinner while fetching, or an error message if it fails.
+- Handles searching and sorting of the stations.
+  - The search is debounced.
+  - Search filtering and sorting is done over the fetched list of stations at the frontend rather than backend (because we don't have one implemented as such). Should move to the backend once backend is capable.
 
-- Parent component which lays out the `SearchBox`, `SortButton` and `StationCardList` components.
+#### StationSelector
 
-**ControlButton**
+- Parent component integrating the search bar, sorting dropdown, and station grid.
 
-- A simple button component that displays a simple icon from a given set of icons.
-- Can display two sizes.
-- Can be in active or disabled state.
+#### ControlButton
+
+- A reusable button component with customizable icons, active/disabled states, and size options.
 - See Potential Improvements for more details.
 
-**MiniPlayer**
+#### MiniPlayer
 
 - A single button (play/pause) player that displays a red error icon on error.
 - It's a very basic implementation using the `usePlayer` hook.
 
-**PlayerWithNav**
+#### PlayerWithNav
 
 - A player with a play/pause button and a previous station button.
 - Currently uses the MiniPlayer component for the play/pause button. Alternative is to use the `usePlayer` hook directly, but then we'll need to re-implement the error icon.
 - It has the ability to go back and play the previous station in the previously played stations list using the Previous Station button (up to 5 previous stations, no duplicates).
 
-**StickyPlayerContainer**
+#### StickyPlayerContainer
 
 - A container for the `PlayerWithNav` component that sticks to the bottom of the window when the player is visible.
 - Also displays the station logo, name and description on the left side of the player.
 
 ### Hooks
 
-**usePlayer**
+#### usePlayer
 
-- A custom hook that provides the player state and control functions to the components.
-- Subscribes tot he player state changes and updates the components that are subscribed to the player state changes and errors.
-- Abstracts away the connection to the `AudioPlayer` component and simplifies the usage of the `AudioPayer` in different components.
+- Connects UI components to the player state and control functions.
+- Simplifies access to playback controls and state updates.
+- Manages subscriptions to playback events for efficient reactivity.
+- Abstracts away the connection to the `AudioPlayer` component.
 
-**useStationListQuery**
+#### useStationListQuery
 
-- A custom hook that fetches the list of stations from the API.
-- Has very basic error handling just as an example.
-- Retries on error with exponential backoff strategy.
+- Handles fetching and caching station data using React Query.
+- Implements error handling with exponential backoff retries.
 
-**useUserSettingsStore**
+#### useUserSettingsStore
 
-- This is the global state store to keep state values such as current sort direction, sort field, currently playing stations, previously played stations, etc.
-- Since the application is small, I used one store for everything, but in a larger application, it would be better to split the store into multiple stores for better maintainability.
+- Stores global application settings, including sorting preferences and playback history.
+- Currently there is one store with all states. In a larger application, it would be better to split the store into multiple stores for better maintainability.
 
-**Providers**
+### Providers
 
 - A top level component that only acts as the wrapper for the various providers in the application. Used to keep the `App` component clean.
 
@@ -172,17 +162,16 @@ Client configurations for axios and React Query can be found in the `src/client`
 
 ### State Management
 
-**Component level state**
+#### Component level state
 
-- Component level simple state is managed locally in the components.
+Managed within components for isolated logic.
 
-**Global state**
+#### Global state
 
-- Global state is managed using Zustand, which provides a simple and efficient way to manage state in React applications.
-- It's also compatible with Redux dev tools.
-- Some functions are provided but not used, such as the reset() function, as an example of resetting the state to the initial state.
+- Zustand simplifies state management and integrates with Redux DevTools for debugging.
+- Some functions are provided but not used (i.e. the reset() function) provided as examples.
 
-**Async state**
+#### Async state
 
 - Async state (we only have one async state in this application which is the station list from the API) is managed using React Query, which provides a powerful and flexible way to fetch, cache, and update data in React applications. React Query also provides a way to manage loading, error, and data states in a clean and efficient way.
 - Via the `useStationListQuery` hook, we can fetch the station list from the API and handle loading, error, and data states in a clean and efficient way.
@@ -203,25 +192,39 @@ Client configurations for axios and React Query can be found in the `src/client`
 - The trade-off is that it's not as popular as Redux, so it may be harder to find developers who are familiar with it. Nevertheless, it's easy to learn and use.
 - React Query was chosen for async state management because it provides a powerful and flexible way to fetch, cache, and update data in React applications. It's also easy to implement and to make sense of. While in this application we only have one API call, it's still a valuable tool with it's failure management and caching strategies.
 
-## Potential Improvements
+## Potential Enhancements
 
-Given more time, I would:
+Given additional time and resources, the following features could be implemented to improve functionality:
 
-- Add unit tests for the utility functions, custom hooks, components, and integration tests.
-- Add persistence to some elements of the state, such as the previously played stations list, currently playing station and play state, search query, and sort settings.
-- Use the proper `ActionIcon` component for the `ControlButton`, taking it's customization overhead. This would be much better in terms of accessibility standards and possibly consistency in the application UI/UX.
-- I would definitely add a volume control. It could use the same usePlayer hook but only for the volume control, without the play/pause functionality, thus making it more modular.
-- I would add a *add to/remove from favorites* functionality.
-- Add *play next* functionality. Such that, when the user has a list of previously played stations and they go back to play one of them using the play previous button, then the play next button would play the last station that was played before the user went back to play the previous station.
-- Previously search for keywords list. This would be a list of keywords that the user has searched for in the past.
-- Also search in station description and station tags
-- Display station tags in the `StationCard` component.
-- A station suggestion when the selected station is not available.
-- Audio level normalization.
-- Making use of more events fired by the `HTMLAudioElement` API and using them to provide more feedback to the user.
-- Backend search filtering, sorting and pagination.
-- The logo fallback image is fetched online, which is not a good practice. It should be stored locally which will enable it to be shown even when the client is offline.
+1. User Interaction Features:
 
+    - Add persistence to some elements of the state, such as the previously played stations list, currently playing station and play state, search query, and sort settings.
+    - Add a volume control. It could use the same usePlayer hook but only for the volume control, without the play/pause functionality, thus making it more modular.
+    - Add a *add to/remove from favorites* functionality.
+    - Add *play next* functionality.
+    - Search persistence with search history.
+    - Search in station description and station tags
+
+1. UI/UX enhancements:
+
+    - Use the `ActionIcon` component for the `ControlButton` for improved accessibility and consistent design.
+    - Station tags in the `StationCard` component.
+    - Station suggestion when the selected station is not available.
+    - Offline logo fallback image as opposed to the current online image.
+
+1. Audio enhancements:
+
+    - Audio level normalization.
+    - Expanded event handling for `HTMLAudioElement` events to provide more feedback to the user.
+
+1. Backend integration:
+
+    - Backend search filtering, sorting and pagination.
+
+1. Testing:
+
+    - Add unit tests for the utility functions, custom hooks, components, and integration tests.
+  
 ## Example Technical Debt
 
 - `onError` callback of the `AudioPlayer` is implemented in the beginning, before the decision of making `AudioPlayer` a singleton. Now that many components have the ability to using the same audio player, the `onError` callback should be implemented as a `Set` of callbacks, which are called one by one in the order they are defined, much like the subscription system.
@@ -247,8 +250,4 @@ npm install
 npm run dev
 ```
 
-4. Access the app at <http://localhost:3000>.
-
-## Hosted version
-
-The application is already being hosted at <https://joininradio.netlify.app/> for easy access to the app's functionality.
+1. Access the app at <http://localhost:3000>.
